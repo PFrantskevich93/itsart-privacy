@@ -129,15 +129,42 @@ def policy(g):
     return page(f"{name} Privacy Policy", body)
 
 
+def support(g):
+    name = g["name"]
+    body = f"""
+<h1>{name} &mdash; Support</h1>
+<p class="meta">{STUDIO}</p>
+
+<p>Need help with {name}, found a bug or have an idea? Write to us at
+<a href="mailto:{EMAIL}?subject={name.replace(' ', '%20')}">{EMAIL}</a> &mdash; we usually answer within two business days.</p>
+<p>To help us fix a problem faster, please mention your device model, its OS version and, if you can, the level where it happened.</p>
+
+<h2>Common questions</h2>
+<h3>Is my progress saved?</h3>
+<p>Yes, automatically on your device. Deleting the game also deletes the saved progress.</p>
+<h3>Does the game need an internet connection?</h3>
+<p>No, you can play offline.</p>
+<h3>Are there ads or in-app purchases?</h3>
+<p>No.</p>
+<h3>How do I ask for my data to be deleted?</h3>
+<p>Email us from the address above; see the <a href="../privacy/">privacy policy</a> for what is collected.</p>
+
+<p><a href="../privacy/">Privacy Policy</a></p>
+"""
+    return page(f"{name} Support", body)
+
+
 def index():
-    items = "".join(f'<li><a href="{g["slug"]}/privacy/">{g["name"]} &mdash; Privacy Policy</a></li>' for g in GAMES)
-    return page(f"{STUDIO} Games", f"<h1>{STUDIO} Games</h1><p class=\"meta\">Privacy policies</p><ul>{items}</ul>")
+    items = "".join(f'<li>{g["name"]}: <a href="{g["slug"]}/support/">Support</a> &middot; <a href="{g["slug"]}/privacy/">Privacy Policy</a></li>' for g in GAMES)
+    return page(f"{STUDIO} Games", f"<h1>{STUDIO} Games</h1><p class=\"meta\">Support and privacy</p><ul>{items}</ul>")
 
 
 for g in GAMES:
     out = ROOT / g["slug"] / "privacy" / "index.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(policy(g))
+    sup = ROOT / g["slug"] / "support" / "index.html"
+    sup.parent.mkdir(parents=True, exist_ok=True)
+    sup.write_text(support(g))
 (ROOT / "index.html").write_text(index())
-(ROOT / ".nojekyll").write_text("")
 print("ok")
